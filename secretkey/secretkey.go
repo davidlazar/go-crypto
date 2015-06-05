@@ -158,7 +158,7 @@ func Decode(data []byte) ([]byte, error) {
 	}
 	x, err := base32.DecodeString(buf.String())
 	if err != nil {
-		return nil, fmt.Errorf("base32.DecodeString: %s")
+		return nil, fmt.Errorf("base32.DecodeString: %s", err)
 	}
 	return x, nil
 }
@@ -186,6 +186,6 @@ func confirmPassphrase() ([]byte, error) {
 		if bytes.Equal(passphrase, confirmation) {
 			return passphrase, nil
 		}
-		fmt.Fprintln(os.Stderr, "Passphrases do not match! Try again.\n")
+		fmt.Fprint(os.Stderr, "Passphrases do not match! Try again.\n\n")
 	}
 }

@@ -91,7 +91,7 @@ func TestEncode(t *testing.T) {
 		enc := Encode(x)
 		dec, err := Decode(enc)
 		if err != nil {
-			t.Fatalf("Decode: %s")
+			t.Fatalf("Decode: %s", err)
 		}
 		if !bytes.Equal(dec, x) {
 			t.Fatalf("expected: %x\nactually: %x", x, dec)
