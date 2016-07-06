@@ -14,7 +14,7 @@ type digest struct {
 	r   [5]uint32
 	h   [5]uint32
 	pad [4]uint32
-	key [32]byte
+	key *[32]byte
 	x   [BlockSize]byte
 	nx  int
 }
@@ -25,9 +25,9 @@ type digest struct {
 // be expected to reveal enough information to allow forgeries
 // of authenticators on other messages."
 // See: http://nacl.cr.yp.to/onetimeauth.html
-func New(key [32]byte) hash.Hash {
+func New(key *[32]byte) hash.Hash {
 	d := new(digest)
-	copy(d.key[:], key[:])
+	d.key = key
 	d.Reset()
 	return d
 }

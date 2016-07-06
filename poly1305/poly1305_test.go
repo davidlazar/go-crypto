@@ -131,14 +131,14 @@ func TestRandom(t *testing.T) {
 }
 
 func Sum(out *[16]byte, in []byte, key *[32]byte) {
-	h := New(*key)
+	h := New(key)
 	h.Write(in)
 	sum := h.Sum(nil)
 	copy(out[:], sum)
 }
 
 func SumSporadic(out *[16]byte, in []byte, key *[32]byte) {
-	h := New(*key)
+	h := New(key)
 	for len(in) > 0 {
 		i := randInt(len(in))
 		h.Write(in[:i])

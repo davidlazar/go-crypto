@@ -46,13 +46,13 @@ func TestRandom(t *testing.T) {
 }
 
 func XORKeyStream(out, in []byte, nonce []byte, key *[32]byte) {
-	c := New(*key, nonce)
+	c := New(key, nonce)
 	c.XORKeyStream(out, in)
 }
 
 func XORKeyStreamWriter(out, in []byte, nonce []byte, key *[32]byte) {
 	b := new(bytes.Buffer)
-	w := &cipher.StreamWriter{S: New(*key, nonce), W: b}
+	w := &cipher.StreamWriter{S: New(key, nonce), W: b}
 	for len(in) > 0 {
 		i := randInt(len(in))
 		if _, err := w.Write(in[:i]); err != nil {

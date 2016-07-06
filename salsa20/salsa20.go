@@ -10,23 +10,25 @@ import (
 const BlockSize = 64
 
 type salsaCipher struct {
-	key     [32]byte
+	key     *[32]byte
 	nonce   [8]byte
 	x       [BlockSize]byte
 	nx      int
 	counter uint64
 }
 
-func New(key [32]byte, nonce []byte) cipher.Stream {
+func New(key *[32]byte, nonce []byte) cipher.Stream {
 	c := new(salsaCipher)
 
 	if len(nonce) == 24 {
+		var subKey [32]byte
 		var hNonce [16]byte
 		copy(hNonce[:], nonce[:16])
-		salsa.HSalsa20(&c.key, &hNonce, &key, &salsa.Sigma)
+		salsa.HSalsa20(&subKey, &hNonce, key, &salsa.Sigma)
 		copy(c.nonce[:], nonce[16:])
+		c.key = &subKey
 	} else if len(nonce) == 8 {
-		copy(c.key[:], key[:])
+		c.key = key
 		copy(c.nonce[:], nonce)
 	} else {
 		panic("salsa20: nonce must be 8 or 24 bytes")
@@ -67,7 +69,7 @@ func (c *salsaCipher) blocks(dst, src []byte) {
 	var nonce [16]byte
 	copy(nonce[:], c.nonce[:])
 	binary.LittleEndian.PutUint64(nonce[8:], c.counter)
-	salsa.XORKeyStream(dst, src, &nonce, &c.key)
+	salsa.XORKeyStream(dst, src, &nonce, c.key)
 	c.counter += uint64(len(src)) / 64
 }
 
