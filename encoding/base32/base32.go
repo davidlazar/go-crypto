@@ -3,7 +3,6 @@ package base32
 import (
 	"encoding/base32"
 	"errors"
-	"strings"
 )
 
 // drop the following letters:
@@ -14,17 +13,14 @@ import (
 const encodeCompact = "0123456789abcdefghjkmnpqrstvwxyz"
 
 // CompactEncoding is a lowercase base32 encoding using Crockford's alphabet
-var CompactEncoding = base32.NewEncoding(encodeCompact)
+var CompactEncoding = base32.NewEncoding(encodeCompact).WithPadding(base32.NoPadding)
 
-// EncodeToString encodes src using CompactEncoding without padding
+// EncodeToString encodes src using CompactEncoding
 func EncodeToString(src []byte) string {
-	s := CompactEncoding.EncodeToString(src)
-	return strings.TrimRight(s, "=")
+	return CompactEncoding.EncodeToString(src)
 }
 
-func DecodeString(s string) ([]byte, error) {
-	pad := strings.Repeat("=", (8-len(s)%8)%8)
-	src := s + pad
+func DecodeString(src string) ([]byte, error) {
 	dst, err := CompactEncoding.DecodeString(src)
 	if err != nil {
 		return nil, err
