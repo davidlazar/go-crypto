@@ -37,7 +37,7 @@ func TestRandom(t *testing.T) {
 		x := randInt(len(msg))
 		c3 := make([]byte, len(msg)-x)
 		c4 := make([]byte, len(msg)-x)
-		salsa20.XORKeyStream(c3, msg, nonce, &key)
+		salsa20.XORKeyStream(c3, msg[:len(msg)-x], nonce, &key)
 		XORKeyStream(c4, msg, nonce, &key)
 		if !bytes.Equal(c3, c4) {
 			t.Fatalf("key=%x nonce=%x msg=%x\n  expected=%x\n  actually=%x", key, nonce, msg, c3, c4)
